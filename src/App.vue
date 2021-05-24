@@ -1,28 +1,54 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div v-if="!loading">
+      <Header/>
+      <Main 
+      :discs="arrDiscs"/>
+    </div>
+    <div v-else>
+      <Loading str="Spotify" />
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import axios from 'axios';
+import Header from './components/Header.vue';
+import Main from './components/Main.vue';
+import Loading from './components/Loading.vue';
+
 
 export default {
   name: 'App',
+  data(){
+    return{
+      axios,
+      arrDiscs:[],
+      loading:true,
+    }
+  },
+  created(){
+    axios.get('https://flynn.boolean.careers/exercises/api/array/music')
+    .then(res =>{
+      console.log(res.data.response);
+      this.arrDiscs = res.data.response;
+      this.loading = false;
+    })
+    .catch(err =>{
+      console.log(err);
+    })
+  },
   components: {
-    HelloWorld
-  }
+    Header,
+    Main,
+    Loading
+
+    
+  },
+  
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import '@/assets/style/general.scss';
 </style>
