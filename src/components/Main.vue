@@ -30,7 +30,6 @@ export default {
 <style lang="scss" scoped>
 
 main{
-  background-color:#1E2D3B ;
   padding: 90px 0;
   .discs-container{
     display: flex;
@@ -52,12 +51,15 @@ main{
           font-size: 20px;
           text-transform: uppercase;
           font-weight: bold;
-          margin:20px 0;
+          margin:20px 0 10px;
         };
         h4{
           font-size: 15px;
           color:#737771; 
-          margin-bottom: 0;      
+          margin-bottom: 0;
+           &:last-child{
+            font-size: 13px
+          };            
         };
       };
     };

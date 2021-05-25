@@ -18,6 +18,9 @@ export default {
 <style lang="scss" scoped>
 .wrap{
   height: 100vh;
+  background-color: #1E2D3B;
+  color: #FFF;
+  font-weight: bold;
 }
 .lds-roller {
   display: inline-block;
