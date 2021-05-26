@@ -16,9 +16,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../assets/style/vars.scss';
 .wrap{
   height: 100vh;
-  background-color: #1E2D3B;
+  background-color: $header-color;
   color: #FFF;
   font-weight: bold;
 }

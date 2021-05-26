@@ -1,68 +1,82 @@
 <template>
-  <main class="d-flex">
-    <section class="discs-container col-10 offset-1">
-      <div 
-      v-for="(disc, index) in discs" :key="index"
-      class="disc-box col-12 col-md-6 col-lg-2 p-3 m-0 p-lg-0 m-lg-3 text-center">
-
-        <div class="background-box p-3">
-          <img class="img-fluid" :src="disc.poster" :alt="disc.title">
-          <h3>{{disc.title}}</h3>
-          <h4>{{disc.author}}</h4>
-          <h4>{{disc.year}}</h4>
+  <main>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <FilterDiscs
+            :genres="genres"
+            @selectGenre="selecting"
+            @searchAuthor="searching"
+            />
         </div>
 
-      </div>
-    </section>
-
+        <div class="row ep-disc-container justify-content-center">
+          <Disc
+            v-for="(disc, index) in filteredDiscs" :key="index"
+            :disc="disc"
+          />
+        </div>
+    </div> 
   </main>
 </template>
 
 <script>
+import FilterDiscs from '@/components/FilterDiscs.vue'
+import Disc from '@/components/Disc.vue'
+import axios from 'axios';
 export default {
- name:'Main',
- props:{
-   discs: Array
- }
-};
+  name: 'Main',
+  components: {
+    FilterDiscs,
+    Disc
+  },
+  data() {
+    return {
+      axios,
+      discs: [],
+      genres: [],
+      optSelect: '1',
+      authSearch: ''
+    }
+  },
+  methods: {
+    selecting(opt) {
+      this.optSelect = opt;
+    },
+    searching(text) {
+      this.authSearch = text;
+    }, 
+  },
+  computed: {
+    filteredDiscs() {
+      if (this.optSelect === '1' && this.authSearch === '') {
+        return this.discs;
+      }
+      if (this.optSelect != '1') {
+        return this.discs.filter(disc => disc.genre === this.optSelect);
+      }
+      return this.discs.filter(disc => disc.author.toLowerCase().includes(this.authSearch.toLowerCase()))
+    },
+  },
+  created() {
+    axios.get('https://flynn.boolean.careers/exercises/api/array/music')
+      .then(res => {
+        this.discs = res.data.response;
+        this.loading = false;
+        res.data.response.forEach(disc => {
+          if (!this.genres.includes(disc.genre)) {
+            this.genres.push(disc.genre);
+          }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-
-main{
-  padding: 90px 0;
-  .discs-container{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    .disc-box{
-      .background-box{
-        background-color:#2E3A46 ;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        height: 100%;
-        img{
-          width: 100%;
-        };
-        h3{
-          color: #FFF;
-          font-size: 20px;
-          text-transform: uppercase;
-          font-weight: bold;
-          margin:20px 0 10px;
-        };
-        h4{
-          font-size: 15px;
-          color:#737771; 
-          margin-bottom: 0;
-           &:last-child{
-            font-size: 13px
-          };            
-        };
-      };
-    };
-  };
-};
+  .ep-disc-container {
+    padding: 50px 10%;
+  }
 </style>
